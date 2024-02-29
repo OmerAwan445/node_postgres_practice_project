@@ -5,7 +5,7 @@ FOR EXAMPLE db.name = "DB_NAME" HERE IT MEANS IN .env FILE THERE WILL BE A FIELD
 module.exports = {
     db:{
         name:'DB_NAME',
-        userName:'DB_USER',
+        user:'DB_USER',
         password:'DB_PASSWORD',
     }
 }

@@ -1,12 +1,14 @@
-import { config } from 'dotenv';
-import { Pool } from 'pg';
+import pg from 'pg';
+import { getEnv } from './utils/getEnv.js';
+
+const { Pool } = pg;
 
 const pgPool = new Pool({
-    user: config.get('db.user'),
-    host: 'localhost',
-    database: 'node__pg_auth',
-    port: '5432',
-    password: 'password'
+    user: getEnv('db.user'),
+    host: getEnv('db.host'),
+    database: getEnv('db.name'),
+    port: getEnv('db.port'),
+    password: getEnv('db.password')
 });
 
 function query(text, params) {

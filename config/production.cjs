@@ -5,10 +5,10 @@ FILLED FIELDS MEANS THAT THEY ARE ONLY USED IN PRODUCTION
 
 module.exports = {
     db:{
-        port: "5454",
+        port: process.env.DB_PORT,
         name:'',
-        userName:'',
-        host:process.env.DB_HOST ?? '',
+        user:'',
+        host:process.env.DB_HOST,
         password:'',
     },
     server:{

@@ -11,10 +11,10 @@ AND THEY ARE COMMON IN DEV AND PRODUCTION
 
 module.exports = {
     db:{
-        port: "5454",
-        name:'',
-        userName:'',
+        port: "5432",
         host:'localhost',
+        name:'',
+        user:'',
         password:''
     },
     server:{
