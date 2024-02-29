@@ -1,12 +1,10 @@
 import Express from 'express';
-import dotenv from 'dotenv';
-dotenv.config();
 import config from 'config';
 
 const app = Express();
 
-console.log(config.get('db.port'), 'env var');
-const port = 3000;
+console.log(config.get('db'), 'env var');
+const port = config.get('server.port');
 
 app.listen(port, () => {
 console.log("Server is running on port", port);

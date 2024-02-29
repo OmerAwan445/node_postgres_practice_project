@@ -1,7 +1,8 @@
+import { config } from 'dotenv';
 import { Pool } from 'pg';
 
 const pgPool = new Pool({
-    user: 'postgres',
+    user: config.get('db.user'),
     host: 'localhost',
     database: 'node__pg_auth',
     port: '5432',
