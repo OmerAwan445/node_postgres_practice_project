@@ -1,24 +1,20 @@
-import Express from 'express';
+import express from 'express';
 import config from 'config';
-import query from './db.js'
+import { router } from './route.js';
 
-const app = Express();
+const app = express();
 
 console.log(config.get('db'), 'env var');
 const port = config.get('server.port');
 
 app.listen(port, () => {
-    console.log("Server is running on port", port);
-})
+  console.log('Server is running on port', port);
+});
 
-app.use('/',async (req, res)=> {
-    await query('SELECT * FROM users').then((data) => {
-        console.log(data.rows);
-        res.send(data.rows);
-    }).catch(err=>{
-        console.log(err);
-        res.send(err);
-    })
-})
+app.use((err, req, res, next)=>{
+});
+
+
+app.use('/api', router);
 
 app.use(Express.json());

@@ -1,5 +1,6 @@
-import config from "config";
+import config from 'config';
 
-export function getEnv(envName){
-    return config.get(envName);
+// eslint-disable-next-line
+export function getEnv(envName) {
+  return config.get(envName);
 }
