@@ -1,39 +1,54 @@
-export const handler = new ErrorHandler();
+import { AppError } from "./AppError.js";
+
 /**
- * Represents an error handler.
+ * It typically sits at the top level of your Express application and is used as middleware
+ * to catch and process errors that occur during the request-response cycle.
+ * It captures errors that are thrown or passed to the next() function in middleware etc.
  * @class
- */
-export class ErrorHandler extends Error {
-
-}
-//  ===== Learn and implement according to this
-/* // Route controller
-try {
-    customerService.addNew(req.body).then((result: Result) => {
-        res.status(200).json(result);
-    }).catch((error: Error) => {
-        next(throw new AppError(403, 'Forbidden',
-        'Customer cannot add an item at this point', true, true));
-    });
-}
-catch (error) {
-    next(throw new AppError(403, 'Forbidden',
-    'Customer cannot add an item at this point', true, true));
-}
-
-// Error handling middleware
-app.use(async (err: Error, req: Request, res: Response, next: NextFunction) => {
-    handler.handleError(err, req)
-});
-
-
+*/
 class ErrorHandler {
-   public async handleError(error: Error, responseStream: Response):
-   Promise<void> {
-        await logger.logError(error);
-        await fireMonitoringMetric(error);
-        await crashIfUntrustedErrorOrSendResponse(error, responseStream);
-    };
+    /**
+       * Handles errors that occur during the request-response cycle.
+       * @param {Error} error - The error to handle.
+       * @param {Response} responseStream - The response stream to send the error to.
+       * @returns {Promise<void>} A promise that resolves when the error handling is complete.
+    */
+    // eslint-disable-next-line
+    async handleError(error, responseStream) {
+        await this.logError(error);
+        await this.fireMonitoringMetric(error);
+        await this.crashIfUntrustedErrorOrSendResponse(error, responseStream);
+    }
+    /**
+     * logs the error
+     * @param {Error} error - The error to log.
+  */
+    async logError(error) {
+        console.error(error);
+    }
+    /**
+       * Fires a monitoring metric for the error.
+       * @param {Error} error - The error to fire the metric for.
+    */
+    async fireMonitoringMetric(error) {
+        // console.error(error);
+    }
+    /**
+     * Crashes the application if the error is untrusted, otherwise sends the error
+     * to the response stream.
+     * @param {Error} error - The error to handle.
+     * @param {Response} responseStream -  The response stream to send the error to.
+     */
+    async crashIfUntrustedErrorOrSendResponse(error, responseStream) {
+        if (error instanceof AppError) {
+            return responseStream.status(error.statusCode).send({
+                message: error.message,
+                statusCode: error.statusCode,
+            })
+        } else {
+            return responseStream.status(500).send('Internal Server Error');
+        }
+    }
 }
 
-export const handler = new ErrorHandler(); */
+export const handler = new ErrorHandler();

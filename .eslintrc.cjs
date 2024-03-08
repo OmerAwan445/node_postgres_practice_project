@@ -24,5 +24,9 @@ module.exports = {
   },
   'rules': {
     'object-curly-spacing': ['error', 'always'],
+    'max-len': ['error', { 'code': 100 }],
+    'quotes': ['error', 'any'],
+    'no-unused-vars': 'error',
+    'no-undef': 'error',
   },
 };
