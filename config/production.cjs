@@ -15,6 +15,8 @@ module.exports = {
   server: {
     port: process.env.SERVER_PORT,
   },
+  NODE_ENV: '',
+
 };
 
 

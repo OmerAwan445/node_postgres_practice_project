@@ -19,5 +19,6 @@ module.exports = {
     },
     server:{
         port: 3000,
-    }
+    },
+    NODE_ENV: ''
 }

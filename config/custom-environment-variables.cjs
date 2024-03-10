@@ -9,4 +9,5 @@ module.exports = {
     user: 'DB_USER',
     password: 'DB_PASSWORD',
   },
+  NODE_ENV: 'NODE_ENV',
 };
