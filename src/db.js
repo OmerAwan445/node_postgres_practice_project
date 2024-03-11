@@ -1,6 +1,6 @@
 import pg from 'pg';
+import { DbError } from './Errors/DbError.js';
 import { getEnv } from './utils/getEnv.js';
-import { AppError } from './Errors/AppError.js';
 
 const { Pool } = pg;
 
@@ -19,6 +19,6 @@ export const query = async (text, params) => {
   } catch (error) {
     console.log(error.code, 'error code', error.constraint,
         'error constraint', error.name, 'error name');
-    throw new AppError(error.message, 400, true);
+    throw new DbError(error.message, error.code, error.constraint, true);
   }
 };

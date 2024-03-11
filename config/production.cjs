@@ -4,18 +4,22 @@ AND THEY ARE COMMON ON DEV AND PRODUCTION
 FILLED FIELDS MEANS THAT THEY ARE ONLY USED IN PRODUCTION
 */
 
+// eslint-disable-next-line
 module.exports = {
   db: {
+    // eslint-disable-next-line
     port: process.env.DB_PORT,
     name: '',
     user: '',
+    // eslint-disable-next-line
     host: process.env.DB_HOST,
     password: '',
   },
   server: {
+    // eslint-disable-next-line
     port: process.env.SERVER_PORT,
   },
-  NODE_ENV: '',
+  DEV_ENV: '',
 
 };
 

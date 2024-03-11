@@ -15,7 +15,9 @@ export class AppError extends Error {
     super(message);
     Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
 
-
+    // ===================== TODO ================
+    // handle backend error in proper way using contraint and Error code.
+    // Encrypt the password in signup and make login route using jwt token.
     /* Should I seprate the Db Error class from AppError class */
     this.message = message;
     this.errorCode = errorCode;

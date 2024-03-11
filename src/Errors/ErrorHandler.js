@@ -1,5 +1,6 @@
 import { getEnv } from "../utils/getEnv.js";
 import { AppError } from "./AppError.js";
+import { DbError } from "./DbError.js";
 
 /**
  * It typically sits at the top level of your Express application and is used as middleware
@@ -18,6 +19,7 @@ class ErrorHandler {
 async handleError(error, responseStream) {
     await this.logError(error);
     await this.fireMonitoringMetric(error);
+    return await this.checkForDatabaseErrorAndSendResponse(error, responseStream) ||
     await this.crashIfUntrustedErrorOrSendResponse(error, responseStream);
   }
 
@@ -29,10 +31,7 @@ async handleError(error, responseStream) {
     console.error(error);
   }
 
-  /**
-       * Fires a monitoring metric for the error.
-       * @param {Error} error - The error to fire the metric for.
-*/
+  // eslint-disable-next-line
   async fireMonitoringMetric(error) {
   // console.error(error);
   }
@@ -44,22 +43,7 @@ async handleError(error, responseStream) {
      */
   async crashIfUntrustedErrorOrSendResponse(error, responseStream) {
     if (error instanceof AppError) {
-      // Return full error details on development
-      if (getEnv('NODE_ENV') === "development") {
-        return responseStream.status(error.statusCode).send({
-          error: true,
-          name: error.name,
-          message: error.message,
-          statusCode: error.statusCode,
-          stack: error.stack,
-          ...error,
-        });
-      }
-      return responseStream.status(error.statusCode).send({
-        error: true,
-        message: error.message,
-        statusCode: error.statusCode,
-      });
+      return responseStream.status(error.statusCode).send(errorResponseObj(error));
     } else {
       return responseStream.status(500).send(
           {
@@ -70,6 +54,49 @@ async handleError(error, responseStream) {
       );
     }
   }
+
+  /**
+   * Checks for a database error and sends the response.
+   * @param {Error} error
+   * @param {*} responseStream
+   * @return {*}
+*/
+  async checkForDatabaseErrorAndSendResponse(error, responseStream) {
+    if (error instanceof DbError) {
+      if (error.constraint === 'users_email_key' && error.errorCode === '23505') {
+        error.message = 'Email already exists';
+        error.statusCode = 409;
+      }
+      return responseStream.status(error.statusCode).send(errorResponseObj(error));
+    }
+    return null;
+  }
 }
 
 export const handler = new ErrorHandler();
+
+/**
+ * Sends a error response according to DEV_ENV.
+ * Sends Different error response in development and production.
+ * @function errorResponseObj
+ * @param {Error} error - The error to handle.
+ * @return {object} - The error response.
+ */
+function errorResponseObj(error) {
+  console.log(getEnv('DEV_ENV'), "env Var");
+  if (getEnv('DEV_ENV') === "development") {
+    return {
+      error: true,
+      message: error.message,
+      statusCode: error.statusCode,
+      stack: error.stack,
+      ...error,
+    };
+  } else {
+    return {
+      error: true,
+      message: error.message,
+      statusCode: error.statusCode,
+    };
+  }
+}
