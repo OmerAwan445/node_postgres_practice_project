@@ -15,7 +15,7 @@ const db = new Pool({
 export const query = async (text, params) => {
   try {
     const { rows } = await db.query(text, params);
-    return rows[0];
+    return { rows };
   } catch (error) {
     console.log(error.code, 'error code', error.constraint,
         'error constraint', error.name, 'error name');

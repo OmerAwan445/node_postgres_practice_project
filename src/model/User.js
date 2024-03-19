@@ -6,11 +6,12 @@ import { QUERY_CREATE_USER } from "../queries/AuthQueries.js";
  * @param {object} userData - The user data to be created
  */
 const createUser = async (userData) => {
-  const { first_name, last_name, email, password, confirm_password } = userData;
-  const { rows } = await query(QUERY_CREATE_USER,
+  const { first_name, last_name, email, password } = userData;
+  const { rows }= await query(QUERY_CREATE_USER,
   // eslint-disable-next-line
-    [first_name, last_name, email, password, confirm_password]);
+    [first_name, last_name, email, password]);
   return rows;
 };
+
 const UserModel = { createUser };
 export default UserModel;
