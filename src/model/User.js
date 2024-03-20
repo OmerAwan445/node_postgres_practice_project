@@ -1,5 +1,5 @@
 import { query } from '../db.js';
-import { QUERY_CREATE_USER } from "../queries/AuthQueries.js";
+import { QUERY_CREATE_USER, QUERY_GET_USER_BY_EMAIL } from "../queries/AuthQueries.js";
 
 /**
  * @function
@@ -7,11 +7,22 @@ import { QUERY_CREATE_USER } from "../queries/AuthQueries.js";
  */
 const createUser = async (userData) => {
   const { first_name, last_name, email, password } = userData;
-  const { rows }= await query(QUERY_CREATE_USER,
+  const { rows } = await query(QUERY_CREATE_USER,
   // eslint-disable-next-line
     [first_name, last_name, email, password]);
-  return rows;
+  return rows[0];
 };
 
-const UserModel = { createUser };
+/**
+ * @function getUserByEmail
+ * @param {String} email - The email of the user to be retrieved
+ * @return {Promise<User> | null} - The user object
+ */
+async function getUserByEmail(email) {
+  const { rows } = await query(QUERY_GET_USER_BY_EMAIL, [email]);
+  return rows[0];
+}
+
+
+const UserModel = { createUser, getUserByEmail };
 export default UserModel;

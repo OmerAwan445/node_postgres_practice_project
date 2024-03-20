@@ -5,7 +5,7 @@ AND THEY ARE COMMON IN DEV AND PRODUCTION
 
 ==== ORDER FOR COMIPLATION OF CONFIG FILES ===
 ## default.cjs (always)
-## production.cjs (only if DEV_ENV=production)
+## production.cjs (only if NODE_ENV=production)
 ## custom-environment-variables.cjs (always)
 */
 
@@ -22,4 +22,10 @@ module.exports = {
     port: 3000,
   },
   DEV_ENV: "",
+  JWT: {
+    refresh_token_secret: "",
+    access_token_secret: "",
+    refresh_token_expiry: "",
+    access_token_expiry: "",
+  },
 };

@@ -15,7 +15,7 @@ export class DbError extends Error {
     this.message = message;
     this.errorCode = errorCode;
     this.constraint = constraint;
-    this.statusCode = 400; // default status code
+    this.statusCode = 400; // default status code// default status code
     this.isOperational = isOperational;
     Error.captureStackTrace(this);
   }

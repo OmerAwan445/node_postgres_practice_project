@@ -45,13 +45,14 @@ async handleError(error, responseStream) {
     if (error instanceof AppError) {
       return responseStream.status(error.statusCode).send(errorResponseObj(error));
     } else {
-      return responseStream.status(500).send(
-          {
-            error: true,
-            message: 'Internal Server Error',
-            statusCode: 500,
-          },
-      );
+      // crash the application
+      error.statusCode = 500;
+      if (getEnv('DEV_ENV') === "development") {
+        return responseStream.status(500).send(errorResponseObj(error));
+      } else {
+        error.message = "Internal Server Error";
+        return responseStream.status(500).send(errorResponseObj(error));
+      }
     }
   }
 
@@ -83,20 +84,21 @@ export const handler = new ErrorHandler();
  * @return {object} - The error response.
  */
 function errorResponseObj(error) {
-  console.log(getEnv('DEV_ENV'), "env Var");
   if (getEnv('DEV_ENV') === "development") {
     return {
       error: true,
-      message: error.message,
       statusCode: error.statusCode,
+      message: error.message,
       stack: error.stack,
+      data: [],
       ...error,
     };
   } else {
     return {
       error: true,
-      message: error.message,
       statusCode: error.statusCode,
+      message: error.message,
+      data: [],
     };
   }
 }
