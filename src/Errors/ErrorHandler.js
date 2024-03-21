@@ -1,3 +1,4 @@
+import ApiResponse from "../utils/ApiResponse.js";
 import { getEnv } from "../utils/getEnv.js";
 import { AppError } from "./AppError.js";
 import { DbError } from "./DbError.js";
@@ -94,11 +95,6 @@ function errorResponseObj(error) {
       ...error,
     };
   } else {
-    return {
-      error: true,
-      statusCode: error.statusCode,
-      message: error.message,
-      data: [],
-    };
+    return ApiResponse.error(error.message, error.statusCode);
   }
 }

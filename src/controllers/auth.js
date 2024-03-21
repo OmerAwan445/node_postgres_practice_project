@@ -1,9 +1,9 @@
 import { AppError } from '../Errors/AppError.js';
-import { UserModel } from '../model/index.js';
+import { AuthTokenModel, UserModel } from '../model/index.js';
 import { comparePassword, hashPassword } from '../services/bcryptPassword.js';
 import { generateRefreshAndAccessTokens } from '../services/jwtServices.js';
+import ApiResponse from '../utils/ApiResponse.js';
 import { catchAsyncError } from '../utils/catchAsyncError.js';
-import { getResponseObject } from '../utils/getResponseObject.js';
 
 const signup = catchAsyncError(async (req, res, next) => {
   const { first_name, last_name, email, password, confirm_password } = req.body;
@@ -16,7 +16,9 @@ const signup = catchAsyncError(async (req, res, next) => {
 
   const user = await UserModel.createUser(
       { first_name, last_name, email, password: hashedPassword });
-  return res.status(201).send(getResponseObject(user, 201, "User created successfully"));
+
+  const { password:_, ...userWithoutPassword } = user; // eslint-disable-line
+  return res.status(201).send(ApiResponse.success(userWithoutPassword, "User created successfully", 201));
 });
 
 
@@ -40,14 +42,18 @@ const login = catchAsyncError(async (req, res, next) => {
   }
   // If they do, create a JWT refresh token and access token
 
-  const { password: _, ...userInfo } = user; // eslint-disable-line
+  const { password:_, ...userWithoutPassword } = user; // eslint-disable-line
   const { first_name, last_name, id } = user;
   const { accessToken, refreshToken } = await generateRefreshAndAccessTokens({ first_name, last_name, id, email });
 
-  // Save the Tokens in db
-  // Login user by saving that token in user http cookies and sending the tokens in the response
-  return res.status(200).send(getResponseObject({ accessToken, refreshToken, ...userInfo }, 200,
-      "User logged in successfully"));
+  // Save the Tokens in db in auth_tokens table
+  await AuthTokenModel.saveAuthTokenToDb(accessToken, "access", id);
+  await AuthTokenModel.saveAuthTokenToDb(refreshToken, "refresh", id);
+
+  res.cookie('accessToken', accessToken, { httpOnly: true });
+  res.cookie('refreshToken', refreshToken, { httpOnly: true });
+  return res.send(
+      ApiResponse.success({ accessToken, refreshToken, ...userWithoutPassword }, "User logged in successfully", 200));
 });
 
 

@@ -8,8 +8,7 @@ import { QUERY_CREATE_USER, QUERY_GET_USER_BY_EMAIL } from "../queries/AuthQueri
 const createUser = async (userData) => {
   const { first_name, last_name, email, password } = userData;
   const { rows } = await query(QUERY_CREATE_USER,
-  // eslint-disable-next-line
-    [first_name, last_name, email, password]);
+      [first_name, last_name, email, password]);
   return rows[0];
 };
 

@@ -29,6 +29,15 @@ module.exports = {
     'no-undef': 'error',
     'camelcase': 'off',
     "quotes": "off",
+    "require-jsdoc": ["error", {
+      "require": {
+        "FunctionDeclaration": true,
+        "MethodDefinition": false,
+        "ClassDeclaration": false,
+        "ArrowFunctionExpression": true,
+        "FunctionExpression": true,
+      },
+    }],
   },
 };
 

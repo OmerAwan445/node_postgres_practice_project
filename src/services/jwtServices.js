@@ -9,7 +9,6 @@ import { getEnv } from '../utils/getEnv.js';
 async function generateRefreshAndAccessTokens(user) {
   return new Promise((resolve, reject) => {
     try {
-      console.log(getEnv('JWT'));
       const { refresh_token_secret, access_token_secret,
         refresh_token_expiry, access_token_expiry } = getEnv('JWT');
 
