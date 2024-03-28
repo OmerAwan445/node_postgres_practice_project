@@ -40,18 +40,21 @@ const login = catchAsyncError(async (req, res, next) => {
   if (!match) {
     return next(new AppError("Invalid email or password", 401, true));
   }
-  // If they do, create a JWT refresh token and access token
 
   const { password:_, ...userWithoutPassword } = user; // eslint-disable-line
   const { first_name, last_name, id } = user;
   const { accessToken, refreshToken } = await generateRefreshAndAccessTokens({ first_name, last_name, id, email });
 
-  // Save the Tokens in db in auth_tokens table
   await AuthTokenModel.saveAuthTokenToDb(accessToken, "access", id);
   await AuthTokenModel.saveAuthTokenToDb(refreshToken, "refresh", id);
 
   res.cookie('accessToken', accessToken, { httpOnly: true });
-  res.cookie('refreshToken', refreshToken, { httpOnly: true });
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    path: '/refresh_token',
+  });
   return res.send(
       ApiResponse.success({ accessToken, refreshToken, ...userWithoutPassword }, "User logged in successfully", 200));
 });

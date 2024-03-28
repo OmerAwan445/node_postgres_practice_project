@@ -32,7 +32,6 @@ async handleError(error, responseStream) {
     console.error(error);
   }
 
-  // eslint-disable-next-line
   async fireMonitoringMetric(error) {
   // console.error(error);
   }

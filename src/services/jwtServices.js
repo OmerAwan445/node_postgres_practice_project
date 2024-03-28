@@ -24,4 +24,18 @@ async function generateRefreshAndAccessTokens(user) {
   });
 }
 
-export { generateRefreshAndAccessTokens };
+// eslint-disable-next-line
+async function verifyToken(token){
+  try {
+    const decodedToken = jwt.verify(token, getEnv('JWT').access_token_secret);
+    if (!decodedToken.user.id) {
+      return { error: true, message: 'Token is invalid' };
+    }
+    return { error: false, message: 'Token is valid' };
+  } catch (error) {
+    console.log('Error in verifying token:', error.message);
+    return { error: true, message: error.message ?? 'Error in verifying token' };
+  }
+}
+
+export { generateRefreshAndAccessTokens, verifyToken };
